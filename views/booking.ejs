@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="stylesheet" href="/css/main.css" />
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: #f2f5f7;
+      color: #333;
+    }
+    .booking-section {
+      max-width: 780px;
+      margin: 100px auto;
+      padding: 40px 50px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 25px rgba(0,0,0,0.1);
+    }
+    .booking-section h2 {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 2rem;
+      color: var(--brand-color, #008080);
+    }
+    .booking-section p {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #666;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+    label {
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 5px;
+      display: block;
+    }
+    input[type="text"],
+    input[type="number"],
+    input[type="tel"],
+    input[type="date"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+      background-color: #fdfdfd;
+    }
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--brand-color, #008080);
+      outline: none;
+      box-shadow: 0 0 4px rgba(0,128,128,0.3);
+    }
+    #contact {
+      max-width: 300px;
+    }
+    .room-options {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    .room-card {
+      position: relative;
+      flex: 1 1 45%;
+      border: 2px solid #ddd;
+      border-radius: 12px;
+      overflow: hidden;
+      text-align: center;
+      cursor: pointer;
+      background: #fafafa;
+      transition: all 0.3s ease;
+    }
+    .room-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--brand-color, #008080);
+      box-shadow: 0 4px 12px rgba(0,128,128,0.15);
+    }
+    .room-card.active {
+      border-color: var(--accent, #FFD700);
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+      background: #fff8e1;
+    }
+    .room-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-bottom: 1px solid #ccc;
+    }
+    .room-card p {
+      margin: 10px 0 15px;
+      font-size: 0.95rem;
+    }
+    .room-card strong {
+      display: block;
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+      color: var(--brand-color, #008080);
+    }
+    .summary-box {
+      margin-top: 10px;
+      padding: 18px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+    }
+    .summary-box h3 {
+      margin-bottom: 10px;
+      color: var(--brand-color, #008080);
+      text-align: center;
+    }
+    .summary-item {
+      margin: 6px 0;
+      text-align: center;
+    }
+    button {
+      background: var(--brand-color, #008080);
+      color: #fff;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    button:hover {
+      background: #006666;
+      transform: translateY(-1px);
+    }
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      color: #777;
+      font-size: 0.9rem;
+    }
+
+    /* ✅ Toast Notification Styles */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #008080;
+      color: #fff;
+      padding: 14px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      font-weight: 600;
+      font-size: 0.95rem;
+      z-index: 1000;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <%- include('partials/navbar') %>
+
+  <section class="booking-section">
+    <h2>Book Your Stay</h2>
+    <p>Choose your room and plan your perfect resort experience.</p>
+
+    <form action="/booking/submit" method="POST" onsubmit="return validateAndCalculate();">
+      <input type="hidden" name="userId" value="<%= user ? user._id : '' %>" />
+
+      <!-- Accommodation -->
+      <label>Choose Accommodation</label>
+      <div class="room-options">
+        <label class="room-card" id="airconCard">
+          <input type="radio" name="room" value="aircon" data-price="3500" required hidden />
+          <img src="/images/aircon.jpg" alt="Aircon Room" />
+          <p>
+            <strong>Aircon Room</strong>
+            ₱3,500/night<br>
+            Includes A/C, TV, bathroom, and veranda.<br>
+            Perfect for 6–8 guests.
+          </p>
+        </label>
+
+        <label class="room-card" id="bahayCard">
+          <input type="radio" name="room" value="bahaykubo" data-price="1500" required hidden />
+          <img src="/images/kubo.jpg" alt="Bahay Kubo" />
+          <p>
+            <strong>Bahay Kubo</strong>
+            ₱1,500/night<br>
+            Rustic native hut with fan and open veranda.<br>
+            Ideal for families or small groups.
+          </p>
+        </label>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <label for="contact">Contact Number</label>
+        <input type="tel" id="contact" name="contact" pattern="[0-9]{11}" placeholder="09XXXXXXXXX" required />
+      </div>
+
+      <!-- Guests -->
+      <div>
+        <label for="guests">Number of Guests</label>
+        <input type="number" id="guests" name="guests" min="1" max="10" placeholder="e.g. 4" required />
+      </div>
+
+      <!-- Dates -->
+      <div>
+        <label for="checkin">Check-in Date</label>
+        <input type="date" id="checkin" name="checkin" required />
+      </div>
+      <div>
+        <label for="checkout">Check-out Date</label>
+        <input type="date" id="checkout" name="checkout" required />
+      </div>
+
+      <!-- Special Requests -->
+      <div>
+        <label for="specialRequests">Special Requests</label>
+        <textarea id="specialRequests" name="specialRequests" placeholder="Add your request here..."></textarea>
+      </div>
+
+      <!-- Summary -->
+      <div class="summary-box" id="summaryBox">
+        <h3>Booking Summary</h3>
+        <div class="summary-item" id="summaryRoom">Room: —</div>
+        <div class="summary-item" id="summaryDates">Dates: —</div>
+        <div class="summary-item" id="summaryGuests">Guests: —</div>
+        <div class="summary-item" id="summaryNights">Nights: —</div>
+        <div class="summary-item" id="summaryTotal">Total: ₱0</div>
+      </div>
+
+      <button type="submit">Confirm Booking</button>
+    </form>
+  </section>
+
+  <footer>
+    © 2025 Philmar Transient and Beach Resort. All Rights Reserved.
+  </footer>
+
+  <!-- ✅ Toast HTML -->
+  <div id="toast" class="toast">Booking submitted successfully ✅</div>
+
+  <script>
+    const today = new Date();
+    const todayISO = today.toISOString().split("T")[0];
+    const checkinInput = document.getElementById("checkin");
+    const checkoutInput = document.getElementById("checkout");
+
+    // Disable all past dates
+    checkinInput.setAttribute("min", todayISO);
+    checkoutInput.setAttribute("min", todayISO);
+
+    const roomCards = document.querySelectorAll(".room-card");
+
+    roomCards.forEach(card => {
+      card.addEventListener("click", () => {
+        roomCards.forEach(c => c.classList.remove("active"));
+        card.classList.add("active");
+        card.querySelector("input").checked = true;
+        updateSummary();
+      });
+    });
+
+    document.querySelectorAll("#checkin, #checkout, #guests").forEach(el => {
+      el.addEventListener("change", () => {
+        enforceDateRules();
+        updateSummary();
+      });
+    });
+
+    function calculateNights(checkin, checkout) {
+      const start = new Date(checkin);
+      const end = new Date(checkout);
+      const diff = (end - start) / (1000 * 60 * 60 * 24);
+      return diff > 0 ? diff : 0;
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return "—";
+      const date = new Date(dateStr);
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+    }
+
+    function enforceDateRules() {
+      const checkin = checkinInput.value;
+
+      if (checkin) {
+        const nextDay = new Date(checkin);
+        nextDay.setDate(nextDay.getDate() + 1);
+        checkoutInput.setAttribute("min", nextDay.toISOString().split("T")[0]);
+
+        // Auto-reset checkout if it violates the rule
+        if (checkoutInput.value && checkoutInput.value <= checkin) {
+          checkoutInput.value = "";
+        }
+      }
+    }
+
+    function updateSummary() {
+      const room = document.querySelector('input[name="room"]:checked');
+      const checkin = checkinInput.value;
+      const checkout = checkoutInput.value;
+      const guests = document.getElementById("guests").value;
+
+      const nights = calculateNights(checkin, checkout);
+      let total = 0;
+      if (room && nights > 0) total = nights * parseFloat(room.dataset.price);
+
+      document.getElementById("summaryRoom").textContent =
+        `Room: ${room ? (room.value === 'aircon' ? 'Aircon Room' : 'Bahay Kubo') : '—'}`;
+      document.getElementById("summaryDates").textContent =
+        checkin && checkout
+          ? `Dates: ${formatDate(checkin)} → ${formatDate(checkout)}`
+          : "Dates: —";
+      document.getElementById("summaryGuests").textContent = `Guests: ${guests || '—'}`;
+      document.getElementById("summaryNights").textContent = `Nights: ${nights}`;
+      document.getElementById("summaryTotal").textContent = `Total: ₱${total.toLocaleString()}`;
+    }
+
+    function validateAndCalculate() {
+      const checkin = checkinInput.value;
+      const checkout = checkoutInput.value;
+      const nights = calculateNights(checkin, checkout);
+
+      if (nights <= 0) {
+        alert("Your check-out date must be at least one day after your check-in date.");
+        return false;
+      }
+
+      updateSummary();
+      showToast(); // ✅ Show confirmation toast
+      return true;
+    }
+
+    function showToast() {
+      const toast = document.getElementById("toast");
+      toast.classList.add("show");
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3000);
+    }
+
+    // Initialize with today's rules
+    enforceDateRules();
+  </script>
+</body>
+</html>

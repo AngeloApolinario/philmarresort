@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gallery – Philmar Transient and Beach Resort</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="stylesheet" href="/css/main.css" />
+</head>
+<style>
+  .gallery-section {
+  text-align: center;
+  padding: 80px 20px;
+  background: #f9f9f9;
+}
+
+.gallery-section h2 {
+  font-size: 2.4rem;
+  color: #008080;
+  margin-bottom: 10px;
+}
+
+.gallery-section p {
+  color: #555;
+  font-size: 1rem;
+  margin-bottom: 50px;
+}
+
+/* === GALLERY GRID === */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.gallery-grid img {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  border-radius: 14px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gallery-grid img:hover {
+  transform: scale(1.04);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
+}
+
+/* === FOOTER === */
+footer {
+  text-align: center;
+  background: #008080;
+  color: #fff;
+  padding: 20px 0;
+  font-size: 0.9rem;
+  margin-top: 60px;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .hero-text h2 {
+    font-size: 2rem;
+  }
+  .hero-text p {
+    font-size: 1rem;
+  }
+  .gallery-section {
+    padding: 60px 15px;
+  }
+}
+</style>
+<body>
+  <!-- NAVBAR -->
+  <%- include('partials/navbar') %>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <video autoplay muted loop playsinline poster="/images/resort1.jpg">
+      <source src="/videos/resort2.mp4" type="video/mp4" />
+      Your browser does not support video playback.
+    </video>
+    <div class="hero-text">
+      <h2>Discover the Beauty of <span>Philmar Transient and Beach Resort</span></h2>
+      <p>Relax and unwind in our tropical paradise — your perfect getaway awaits.</p>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="gallery-section">
+    <h2>Our Beautiful Resort</h2>
+    <p>Browse through some of our most stunning locations and relaxing amenities.</p>
+    <div class="gallery-grid">
+      <img src="/images/gallery1.png" alt="Resort Beach" loading="lazy" />
+      <img src="/images/gallery2.png" alt="Luxury Pool" loading="lazy" />
+      <img src="/images/gallery3.png" alt="Tropical Garden" loading="lazy" />
+      <img src="/images/gallery4.png" alt="Sunset View" loading="lazy" />
+      <img src="/images/gallery5.png" alt="Elegant Rooms" loading="lazy" />
+      <img src="/images/gallery6.png" alt="Outdoor Dining" loading="lazy" />
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2025 Philmar Transient and Beach Resort. All rights reserved.</p>
+  </footer>
+
+  <!-- LOGIN/SIGNUP MODAL -->
+  <div id="authModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <h2 id="modalTitle">Login</h2>
+      <form id="authForm">
+        <input type="email" id="email" placeholder="Email" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button type="submit" id="authButton">Login</button>
+        <p class="toggle-text">
+          Don't have an account?
+          <a href="#" id="toggleAuth">Sign up here</a>
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT -->
+  <script>
+    const modal = document.getElementById("authModal");
+    const toggleAuth = document.getElementById("toggleAuth");
+    const modalTitle = document.getElementById("modalTitle");
+    const authButton = document.getElementById("authButton");
+
+    function openModal() {
+      modal.style.display = "flex";
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeModal() {
+      modal.style.display = "none";
+      document.body.style.overflow = "auto";
+    }
+
+    toggleAuth.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (modalTitle.textContent === "Login") {
+        modalTitle.textContent = "Sign Up";
+        authButton.textContent = "Sign Up";
+        toggleAuth.textContent = "Login here";
+      } else {
+        modalTitle.textContent = "Login";
+        authButton.textContent = "Login";
+        toggleAuth.textContent = "Sign up here";
+      }
+    });
+
+    window.onclick = (e) => {
+      if (e.target === modal) closeModal();
+    };
+  </script>
+</body>
+</html>

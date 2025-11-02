@@ -1,0 +1,127 @@
+  <header>
+    <div class="logo-container">
+      <a href="/admin/dashboard">
+        <img src="/images/logo.png" alt="Philmar Resort Logo" class="logo">
+      </a>
+      <h1>Admin Panel</h1>
+    </div>
+
+    <nav>
+      <a href="/admin/dashboard" class="<%= title.includes('Dashboard') ? 'active' : '' %>">Dashboard</a>
+      <a href="/admin/analytics" class="<%= title.includes('Analytics') ? 'active' : '' %>">Analytics</a>
+      <a href="/admin/history" class="<%= title.includes('History') ? 'active' : '' %>">History</a>
+
+      <div class="dropdown">
+        <button class="dropbtn">Manage ▾</button>
+        <div class="dropdown-content">
+          <a href="/admin/manage-bookings" class="<%= title.includes('Manage Bookings') ? 'active' : '' %>">Bookings</a>
+          <a href="/admin/users" class="<%= title.includes('Users') ? 'active' : '' %>">Users</a>
+        </div>
+      </div>
+
+      <% if (admin) { %>
+        <div class="profile-menu">
+          <button class="dropbtn">👤 <%= admin.username %> ▾</button>
+          <div class="dropdown-content">
+            <a href="/admin/settings" class="<%= title.includes('Settings') ? 'active' : '' %>">Settings</a>
+            <a href="/admin/logout">Logout</a>
+          </div>
+        </div>
+      <% } %>
+    </nav>
+  </header>
+
+  <style>
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #008080;
+      color: white;
+      padding: 15px 40px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo {
+      width: 50px;
+      height: 50px;
+      margin-right: 10px;
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    nav a,
+    .dropbtn {
+      color: white;
+      text-decoration: none;
+      margin: 0 10px;
+      font-weight: 500;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .dropdown,
+    .profile-menu {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: white;
+      color: #333;
+      min-width: 160px;
+      border-radius: 6px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      z-index: 999;
+      right: 0;
+    }
+
+    .dropdown-content a {
+      color: #333;
+      padding: 10px 15px;
+      display: block;
+      text-decoration: none;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #f1f1f1;
+    }
+
+    .dropdown:hover .dropdown-content,
+    .profile-menu:hover .dropdown-content {
+      display: block;
+    }
+
+    nav a:hover,
+    nav a.active {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px 20px;
+      }
+
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+    }
+  </style>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Philmar Resort</title>
+  <link rel="icon" type="image/png" href="/images/logo.png">
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>
+  <!-- GLOBAL NAVBAR -->
+  <%- include('partials/navbar') %>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+  <video autoplay muted loop playsinline poster="/images/resort1.jpg">
+    <source src="/videos/resort.mp4" type="video/mp4">
+    Your browser does not support video playback.
+  </video>
+
+  <div class="hero-text">
+    <img src="/images/logo.png" alt="Philmar Resort Logo" class="hero-logo">
+    <h2>Welcome to <span>Philmar Transient and Beach Resort</span></h2>
+    <p>Where comfort meets nature — your ultimate getaway awaits.</p>
+    <a href="/booking" class="login-btn">Book Now</a>
+  </div>
+</section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <h2>About Us</h2>
+    <p>
+      Philmar Transient and Beach Resort offers a relaxing escape with a variety of accommodations,
+      including air-conditioned rooms, beach cottages, a bahay kubo beside the pool, open cottages,
+      and tent pitching areas by the shore. With its refreshing swimming pool, beachfront views,
+      and welcoming atmosphere, the resort is the perfect destination for families, friends,
+      and travelers looking to enjoy comfort, leisure, and nature.
+    </p>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <h2>Contact Us</h2>
+    <p>We’d love to hear from you! Get in touch or visit us at Philmar Transient and Beach Resort.</p>
+
+    <div class="contact-container">
+      <div class="map">
+        <iframe 
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3084.338379915616!2d121.39428147620167!3d15.255159361894261!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397435f00c909b5%3A0x905c535fa206427c!2sPhilmar%20Cottages%2FTransient%20House!5e1!3m2!1sen!2sph!4v1728380660877!5m2!1sen!2sph" 
+          width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+
+      <div class="contact-info">
+        <h3>Get in Touch</h3>
+        <p><strong>📍Address:</strong> Philmar Sitio Tabi Umiray, Dingalan, Philippines</p>
+        <p><strong>📞Telephone:</strong> +1 949-789-6518</p>
+        <p><strong>✉️Email:</strong> info@philmarresort.com</p>
+        <a href="https://www.facebook.com/profile.php?id=100085279055988" target="_blank" class="contact-btn">
+          Message Us on Facebook
+        </a>
+      </div>
+    </div>
+  </section>
+  <footer>
+    © 2025 Philmar Transient and Beach Resort. All Rights Reserved.
+  </footer>
+</body>
+</html>

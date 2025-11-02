@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title || "Resort Rules – Philmar Resort" %></title>
+  <link rel="icon" type="image/png" href="/images/logo.png">
+  <link rel="stylesheet" href="/css/main.css">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    .rules {
+      max-width: 800px;
+      margin: 100px auto;
+      background: #fff;
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    }
+
+    .rules h2 {
+      text-align: center;
+      color: #008080;
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    .rules p {
+      text-align: center;
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+      color: #555;
+    }
+
+    .rules-list {
+      list-style-type: disc;
+      padding-left: 40px;
+      line-height: 1.8;
+    }
+
+    .rules-list li {
+      margin-bottom: 10px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #222;
+      color: #fff;
+      margin-top: 60px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <%- include('partials/navbar') %>
+
+  <!-- RULES SECTION -->
+  <section class="rules">
+    <h2>Resort Rules & Guidelines</h2>
+    <p>Please read and follow our resort policies to ensure a comfortable and safe stay for everyone.</p>
+
+    <ul class="rules-list">
+      <li>Check-in time: 2:00 PM | Check-out time: 12:00 NN</li>
+      <li>No smoking inside cottages and rooms.</li>
+      <li>Pets are allowed but must be supervised at all times.</li>
+      <li>Please dispose of trash properly.</li>
+      <li>Observe quiet hours from 10:00 PM to 6:00 AM.</li>
+      <li>Swimming is allowed only during lifeguard hours.</li>
+    </ul>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    &copy; 2025 Philmar Resort. All rights reserved.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/main.css">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f2f9f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .auth-container {
+      margin-top: 120px;
+      background: white;
+      padding: 2rem 3rem;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 400px;
+      max-width: 90%;
+      text-align: center;
+    }
+    .auth-container h2 {
+      color: var(--brand-color, #008080);
+      margin-bottom: 1rem;
+    }
+    .auth-container input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+    .auth-container button {
+      width: 100%;
+      background: var(--brand-color, #008080);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .auth-container button:hover {
+      background: #006666;
+    }
+    .message {
+      margin-top: 10px;
+      padding: 8px;
+      border-radius: 8px;
+    }
+    .error { background: #ffcccc; color: #a40000; }
+    .success { background: #ccffcc; color: #007a00; }
+  </style>
+</head>
+<body>
+  <%- include('partials/navbar') %>
+
+  <div class="auth-container">
+    <h2>Sign Up</h2>
+
+    <% if (error) { %>
+      <div class="message error"><%= error %></div>
+    <% } %>
+
+    <% if (success) { %>
+      <div class="message success"><%= success %></div>
+    <% } %>
+
+    <form action="/signup" method="POST">
+      <input type="text" name="fullname" placeholder="Full Name" required>
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <button type="submit">Create Account</button>
+    </form>
+
+    <p style="margin-top: 15px;">
+      Already have an account?
+      <a href="/login">Login</a>
+    </p>
+  </div>
+</body>
+</html>

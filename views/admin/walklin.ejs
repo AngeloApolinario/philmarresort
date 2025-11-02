@@ -1,0 +1,11 @@
+<%- include('partials/admin_nav') %>
+
+<div style="padding:30px;">
+  <h2>Walk-In Clients</h2>
+  <form method="POST" action="/admin/walkin/add">
+    <input type="text" name="name" placeholder="Full Name" required>
+    <input type="number" name="guests" placeholder="Guests" required>
+    <input type="text" name="room" placeholder="Room" required>
+    <button type="submit">Add Walk-In</button>
+  </form>
+</div>
