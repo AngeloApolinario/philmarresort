@@ -1,6 +1,7 @@
-// -----------------------------------------------------------
-// 🌴 Philmar Resort Web Server (Enhanced & Secure Version)
-// -----------------------------------------------------------
+// -------------------------------
+// Philmar Resort Website Server
+// (FINAL FIXED VERSION – with Admin, Booking User Link, and Profile Bookings)
+// -------------------------------
 
 const express = require("express");
 const path = require("path");
@@ -8,56 +9,47 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const dotenv = require("dotenv");
 const MongoStore = require("connect-mongo");
-const helmet = require("helmet");
-const morgan = require("morgan");
-const chalk = require("chalk");
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// -----------------------------------------------------------
-// 🧩 DATABASE CONNECTION
-// -----------------------------------------------------------
+// -------------------------------
+// DATABASE CONNECTION
+// -------------------------------
 mongoose
   .connect(process.env.MONGODB_URI || "mongodb://localhost:27017/philmar_resort", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() =>
-    console.log(chalk.greenBright("✅ MongoDB connected successfully"))
-  )
-  .then(createDefaultAdmin)
-  .catch((err) =>
-    console.error(chalk.redBright("❌ MongoDB connection failed:"), err.message)
-  );
+  .then(() => {
+    console.log("✅ Connected to MongoDB successfully");
+    createDefaultAdmin(); // 👈 Ensure admin account exists
+  })
+  .catch((err) => console.error("❌ MongoDB connection failed:", err.message));
 
-// -----------------------------------------------------------
-// ⚙️ VIEW ENGINE
-// -----------------------------------------------------------
+// -------------------------------
+// VIEW ENGINE
+// -------------------------------
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-// -----------------------------------------------------------
-// 📁 STATIC FILES
-// -----------------------------------------------------------
+// -------------------------------
+// STATIC FILES
+// -------------------------------
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/css", express.static(path.join(__dirname, "public/css")));
 app.use("/images", express.static(path.join(__dirname, "public/images")));
 app.use("/videos", express.static(path.join(__dirname, "public/videos")));
 
-// -----------------------------------------------------------
-// 🧰 GLOBAL MIDDLEWARE
-// -----------------------------------------------------------
+// -------------------------------
+// MIDDLEWARE
+// -------------------------------
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(helmet()); // Secure HTTP headers
-app.use(morgan("dev")); // Logging HTTP requests
 
-// -----------------------------------------------------------
-// 🔐 SESSION MANAGEMENT
-// -----------------------------------------------------------
+// ✅ Session setup
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "philmar_secret_key",
@@ -67,16 +59,11 @@ app.use(
       mongoUrl: process.env.MONGODB_URI || "mongodb://localhost:27017/philmar_resort",
       collectionName: "sessions",
     }),
-    cookie: {
-      maxAge: 1000 * 60 * 60 * 24, // 1 day
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-    },
+    cookie: { maxAge: 1000 * 60 * 60 * 24 }, // 1 day
   })
 );
 
-// Make session data available globally in all views
+// ✅ Make session data available in all EJS views
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null;
   res.locals.admin = req.session.admin || null;
@@ -85,9 +72,9 @@ app.use((req, res, next) => {
   next();
 });
 
-// -----------------------------------------------------------
-// 🧾 GLOBAL DASHBOARD VARIABLES
-// -----------------------------------------------------------
+// -------------------------------
+// 🧩 GLOBAL DASHBOARD VARIABLES (Combined Fix)
+// -------------------------------
 app.use((req, res, next) => {
   res.locals.totalBookings = 0;
   res.locals.acceptedBookings = 0;
@@ -98,16 +85,16 @@ app.use((req, res, next) => {
   next();
 });
 
-// -----------------------------------------------------------
-// 🧱 MODELS
-// -----------------------------------------------------------
+// -------------------------------
+// MODELS
+// -------------------------------
 const Booking = require("./models/Booking");
 const User = require("./models/User");
 const Admin = require("./models/Admin");
 
-// -----------------------------------------------------------
-// 👑 DEFAULT ADMIN CREATION
-// -----------------------------------------------------------
+// -------------------------------
+// DEFAULT ADMIN CREATION
+// -------------------------------
 async function createDefaultAdmin() {
   try {
     const existingAdmin = await Admin.findOne({ username: "philmarresortadmin" });
@@ -117,50 +104,35 @@ async function createDefaultAdmin() {
         password: "resortphilmar2025",
       });
       await newAdmin.save();
-      console.log(
-        chalk.cyanBright("✅ Default admin created:"),
-        "\n   Username:", chalk.yellow("philmarresortadmin"),
-        "\n   Password:", chalk.yellow("resortphilmar2025")
-      );
+      console.log("✅ Default admin account created:");
+      console.log(" Username: philmarresortadmin");
+      console.log(" Password: resortphilmar2025");
     } else {
-      console.log(chalk.blueBright("ℹ️ Default admin already exists"));
+      console.log("ℹ️ Default admin already exists.");
     }
   } catch (err) {
-    console.error(chalk.redBright("❌ Error creating default admin:"), err);
+    console.error("❌ Error creating default admin:", err);
   }
 }
 
-// -----------------------------------------------------------
-// 🛣️ ROUTES
-// -----------------------------------------------------------
-const userRoutes = require("./routes/userRoutes");
-const adminRoutes = require("./routes/adminRoutes");
+// -------------------------------
+// ROUTES
+// -------------------------------
 
+// ✅ USER ROUTES
+const userRoutes = require("./routes/userRoutes");
 app.use("/", userRoutes);
+
+// ✅ ADMIN ROUTES
+const adminRoutes = require("./routes/adminRoutes");
 app.use("/admin", adminRoutes);
 
-// -----------------------------------------------------------
-// 🏠 STATIC PAGES
-// -----------------------------------------------------------
-app.get("/", (req, res) =>
-  res.render("index", { title: "Philmar Resort | Home" })
-);
-app.get("/accommodation", (req, res) =>
-  res.render("accommodation", { title: "Accommodation | Philmar Resort" })
-);
-app.get("/gallery", (req, res) =>
-  res.render("gallery", { title: "Gallery | Philmar Resort" })
-);
-app.get("/rules", (req, res) =>
-  res.render("rules", { title: "Resort Rules | Philmar Resort" })
-);
-app.get("/contact", (req, res) =>
-  res.render("contact", { title: "Contact Us | Philmar Resort" })
-);
+// ✅ HOME PAGE
+app.get("/", (req, res) => {
+  res.render("index", { title: "Philmar Resort | Home" });
+});
 
-// -----------------------------------------------------------
-// 📅 BOOKING SYSTEM
-// -----------------------------------------------------------
+// ✅ BOOKING PAGE
 app.get("/booking", (req, res) => {
   if (!req.session.user) return res.redirect("/login");
   res.render("booking", {
@@ -170,10 +142,10 @@ app.get("/booking", (req, res) => {
   });
 });
 
+// ✅ BOOKING SUBMIT (FULL FIX with userId)
 app.post("/booking/submit", async (req, res) => {
   try {
     const { checkin, checkout, guests, room } = req.body;
-
     if (!checkin || !checkout || !guests || !room) {
       return res.render("booking", {
         title: "Book Your Stay | Philmar Resort",
@@ -198,12 +170,12 @@ app.post("/booking/submit", async (req, res) => {
     });
 
     await newBooking.save();
-    console.log(chalk.green(`✅ Booking saved for ${user.fullname || user.email}`));
+    console.log("✅ New booking saved:", newBooking);
 
     req.session.successMessage = "Your booking has been successfully submitted!";
     res.redirect("/profile");
   } catch (err) {
-    console.error(chalk.red("❌ Error saving booking:"), err);
+    console.error("❌ Error saving booking:", err);
     res.render("booking", {
       title: "Book Your Stay | Philmar Resort",
       error: "Something went wrong. Please try again later.",
@@ -212,14 +184,33 @@ app.post("/booking/submit", async (req, res) => {
   }
 });
 
-// -----------------------------------------------------------
-// 👤 PROFILE & ACCOUNT MANAGEMENT
-// -----------------------------------------------------------
+// -------------------------------
+// STATIC PAGES
+// -------------------------------
+app.get("/accommodation", (req, res) =>
+  res.render("accommodation", { title: "Accommodation | Philmar Resort" })
+);
+app.get("/gallery", (req, res) =>
+  res.render("gallery", { title: "Gallery | Philmar Resort" })
+);
+app.get("/rules", (req, res) =>
+  res.render("rules", { title: "Resort Rules | Philmar Resort" })
+);
+app.get("/contact", (req, res) =>
+  res.render("contact", { title: "Contact Us | Philmar Resort" })
+);
+
+// -------------------------------
+// PROFILE PAGE (Shows user’s bookings)
+// -------------------------------
 app.get("/profile", async (req, res) => {
   if (!req.session.user) return res.redirect("/login");
   try {
     const user = await User.findById(req.session.user._id).lean();
-    if (!user) return req.session.destroy(() => res.redirect("/login"));
+    if (!user) {
+      req.session.destroy(() => res.redirect("/login"));
+      return;
+    }
 
     const bookings = await Booking.find({ userId: user._id })
       .sort({ createdAt: -1 })
@@ -240,14 +231,52 @@ app.get("/profile", async (req, res) => {
       notifications,
     });
   } catch (err) {
-    console.error(chalk.red("❌ Error loading profile:"), err);
+    console.error("❌ Error loading profile:", err);
     res.status(500).send("Error loading profile");
   }
 });
 
-// -----------------------------------------------------------
-// 🔑 AUTHENTICATION
-// -----------------------------------------------------------
+// -------------------------------
+// UPDATE PASSWORD
+// -------------------------------
+app.post("/profile/update-password", async (req, res) => {
+  if (!req.session.user) return res.redirect("/login");
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const user = await User.findById(req.session.user._id);
+    if (!user) return res.redirect("/login");
+
+    const isMatch = await user.comparePassword(currentPassword);
+    const bookings = await Booking.find({ userId: user._id }).lean();
+
+    if (!isMatch) {
+      return res.render("profile", {
+        title: "My Profile | Philmar Resort",
+        user,
+        bookings,
+        notifications: [{ message: "❌ Incorrect current password." }],
+      });
+    }
+
+    user.password = newPassword;
+    await user.save();
+    console.log(`✅ Password updated for ${user.email}`);
+
+    res.render("profile", {
+      title: "My Profile | Philmar Resort",
+      user,
+      bookings,
+      notifications: [{ message: "✅ Password successfully updated!" }],
+    });
+  } catch (err) {
+    console.error("❌ Error updating password:", err);
+    res.redirect("/profile");
+  }
+});
+
+// -------------------------------
+// AUTH ROUTES
+// -------------------------------
 app.get("/login", (req, res) => {
   if (req.session.user) return res.redirect("/");
   res.render("login", { title: "Login / Signup | Philmar Resort", error: null, success: null });
@@ -273,15 +302,15 @@ app.post("/signup", async (req, res) => {
 
     const newUser = new User({ fullname, email, password });
     await newUser.save();
-    console.log(chalk.green(`✅ New user registered: ${email}`));
 
+    console.log("✅ New user registered:", newUser.email);
     res.render("login", {
       title: "Login / Signup | Philmar Resort",
       success: "Account created successfully! You can now login.",
       error: null,
     });
   } catch (err) {
-    console.error(chalk.red("❌ Signup error:"), err);
+    console.error("❌ Signup error:", err);
     res.render("signup", {
       title: "Sign Up | Philmar Resort",
       error: "Something went wrong. Please try again later.",
@@ -322,10 +351,10 @@ app.post("/login", async (req, res) => {
       username: user.username || user.email.split("@")[0],
     };
 
-    console.log(chalk.greenBright(`✅ User logged in: ${user.email}`));
+    console.log("✅ User logged in:", user.email);
     res.redirect("/profile");
   } catch (err) {
-    console.error(chalk.red("❌ Login error:"), err);
+    console.error("❌ Login error:", err);
     res.render("login", {
       title: "Login / Signup | Philmar Resort",
       error: "Something went wrong. Please try again.",
@@ -339,16 +368,16 @@ app.get("/logout", (req, res) => {
   req.session.destroy(() => res.redirect("/"));
 });
 
-// -----------------------------------------------------------
-// 🚫 404 PAGE
-// -----------------------------------------------------------
+// -------------------------------
+// 404 PAGE
+// -------------------------------
 app.use((req, res) => {
   res.status(404).render("404", { title: "Page Not Found | Philmar Resort" });
 });
 
-// -----------------------------------------------------------
-// 🚀 START SERVER
-// -----------------------------------------------------------
+// -------------------------------
+// START SERVER
+// -------------------------------
 app.listen(PORT, () => {
-  console.log(chalk.greenBright(`✅ Server running → http://localhost:${PORT}`));
+  console.log(`✅ Server running at http://localhost:${PORT}`);
 });
